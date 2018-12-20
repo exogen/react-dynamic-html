@@ -1,0 +1,171 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Template browser passes props to the rendered element 1`] = `
+<div
+  class="StyledTemplate"
+>
+  Hi there!
+</div>
+`;
+
+exports[`Template browser renders React placeholders 1`] = `
+<div>
+  <h1>
+    Chapter 1: 
+    <span
+      data-template-key="title:1"
+    >
+      A 
+      <em>
+        Better
+      </em>
+       Test
+    </span>
+  </h1>
+</div>
+`;
+
+exports[`Template browser renders numbers, undefined, null, and objects 1`] = `
+<div>
+  Types: 0, , , 1,2,3
+</div>
+`;
+
+exports[`Template browser renders placeholders 1`] = `
+<div>
+  <h1>
+    Chapter 1: A Good Test
+  </h1>
+</div>
+`;
+
+exports[`Template browser renders template updates 1`] = `
+<div>
+  Hey! 
+  <span
+    data-template-key="title:1"
+  >
+    <h1>
+      A Good Test
+    </h1>
+  </span>
+   …and again… 
+  <span
+    data-template-key="title:2"
+  >
+    <h1>
+      A Good Test
+    </h1>
+  </span>
+</div>
+`;
+
+exports[`Template browser renders the given string into a div 1`] = `
+<div>
+  Hi there!
+</div>
+`;
+
+exports[`Template browser renders the given string into the supplied DOM element type 1`] = `
+<span>
+  Hi there!
+</span>
+`;
+
+exports[`Template browser renders value updates 1`] = `
+<div>
+  Hey! 
+  <span
+    data-template-key="title:1"
+  >
+    <h2>
+      A Bad Test
+    </h2>
+  </span>
+</div>
+`;
+
+exports[`Template server passes props to the rendered element 1`] = `
+<div
+  class="StyledTemplate"
+>
+  Hi there!
+</div>
+`;
+
+exports[`Template server renders React placeholders 1`] = `
+<div>
+  <h1>
+    Chapter 1: 
+    <span
+      data-template-key="title:1"
+    >
+      A 
+      <em>
+        Better
+      </em>
+       Test
+    </span>
+  </h1>
+</div>
+`;
+
+exports[`Template server renders numbers, undefined, null, and objects 1`] = `
+<div>
+  Types: 0, , , 1,2,3
+</div>
+`;
+
+exports[`Template server renders placeholders 1`] = `
+<div>
+  <h1>
+    Chapter 1: A Good Test
+  </h1>
+</div>
+`;
+
+exports[`Template server renders template updates 1`] = `
+<div>
+  Hey! 
+  <span
+    data-template-key="title:1"
+  >
+    <h1>
+      A Good Test
+    </h1>
+  </span>
+   …and again… 
+  <span
+    data-template-key="title:2"
+  >
+    <h1>
+      A Good Test
+    </h1>
+  </span>
+</div>
+`;
+
+exports[`Template server renders the given string into a div 1`] = `
+<div>
+  Hi there!
+</div>
+`;
+
+exports[`Template server renders the given string into the supplied DOM element type 1`] = `
+<span>
+  Hi there!
+</span>
+`;
+
+exports[`Template server renders value updates 1`] = `
+<div>
+  Hey! 
+  <span
+    data-template-key="title:1"
+  >
+    <h2>
+      A Bad Test
+    </h2>
+  </span>
+</div>
+`;
