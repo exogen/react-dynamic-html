@@ -1,10 +1,11 @@
 # react-dynamic-html
 
-Sometimes you just need to work with HTML from an older system or a CMS.
+Like `dangerouslySetInnerHTML` but with simple old-school template substitution.
+Values can be React components.
 
-This does old-school runtime HTML templating, but in React!
+Because sometimes you just need to work with HTML from an older system or CMS.
 
-- Zero dependencies, no HTML parser necessary!
-- Template values can be dynamic React elements!
-- Universal, supports server side rendering (SSR)!
-- Keeps component state across template changes!
+- Zero dependencies, no HTML parser necessary
+- Template values can be dynamic React components
+- Universal, supports server side rendering (SSR)
+- Template updates preserve component state
