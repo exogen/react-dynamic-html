@@ -7,7 +7,7 @@ import pkg from "./package.json";
 
 const baseConfig = {
   input: "index.js",
-  external: ["react", "react-dom"],
+  external: ["react", "react-dom", "prop-types"],
   output: [
     { file: pkg.main, format: "cjs" },
     { file: pkg.module, format: "es" }

@@ -19,6 +19,33 @@ class StatefulButton extends React.PureComponent {
   }
 }
 
+class NameApp extends React.Component {
+  state = {
+    name: "Alice"
+  };
+
+  toggleName = () => {
+    this.setState(state => ({
+      name: state.name === "Alice" ? "Bob" : "Alice"
+    }));
+  };
+
+  render() {
+    return (
+      <Template
+        string={`
+          <h1>Hey, {name}!</h1>
+          <p>Click here: {button}</p>
+        `}
+        values={{
+          name: this.state.name,
+          button: <button onClick={this.toggleName}>Toggle</button>
+        }}
+      />
+    );
+  }
+}
+
 export default class DemoPage extends React.Component {
   state = {
     dynamicTemplate: "<h1>It worked!</h1>"
@@ -53,6 +80,7 @@ export default class DemoPage extends React.Component {
             )
           }}
         />
+        <NameApp />
       </main>
     );
   }

@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 
+const emptyValues = {};
 const regex = /(\{([$\w]+)\})/g;
 let renderToString;
 
@@ -33,9 +35,17 @@ function defaultRenderer(name, value, key, hosts, portals) {
 }
 
 export default class Template extends React.PureComponent {
+  static propTypes = {
+    as: PropTypes.string,
+    renderer: PropTypes.func,
+    string: PropTypes.string.isRequired,
+    values: PropTypes.object
+  };
+
   static defaultProps = {
+    as: "div",
     renderer: defaultRenderer,
-    as: "div"
+    values: emptyValues
   };
 
   hostRef = React.createRef();
