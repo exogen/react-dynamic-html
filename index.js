@@ -2,99 +2,51 @@ import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
-const emptyValues = {};
-const regex = /(\{([$\w]+)\})/g;
-const attr = "data-template-key";
 let parseHTML;
+// Only used client-side to target nodes to find with `querySelectorAll`. We
+// can't just use `[data-template-key]` because a Template can render another
+// Template inside. A Template should only find its own placeholder nodes. Only
+// Template instances that render placeholders will be assigned an ID and
+// increment the counter.
+let nextTemplateId = 1;
 
 const isServer = !process.browser;
-
-function defaultRenderer(key, value, tag, getPortal, portals) {
-  if (typeof value === "string") {
-    return value;
-  } else if (value == null) {
-    return "";
-  } else if (React.isValidElement(value)) {
-    portals.push(getPortal(key, value));
-    return `<${tag} ${attr}="${key}"></${tag}>`;
-  }
-  return value.toString();
-}
 
 export default class Template extends React.PureComponent {
   static propTypes = {
     as: PropTypes.string,
-    renderer: PropTypes.func,
+    defaultValueTag: PropTypes.string,
     string: PropTypes.string.isRequired,
-    values: PropTypes.objectOf(PropTypes.node),
-    valueTags: PropTypes.objectOf(PropTypes.string),
-    defaultValueTag: PropTypes.string
+    valuePattern: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    values: PropTypes.object,
+    valueTags: PropTypes.objectOf(PropTypes.string)
   };
 
   static defaultProps = {
     as: "div",
-    renderer: defaultRenderer,
-    values: emptyValues,
-    valueTags: emptyValues,
-    defaultValueTag: "span"
+    defaultValueTag: "span",
+    valuePattern: /(\{([$\w]+)\})/g,
+    values: {},
+    valueTags: {}
   };
+
+  static resetTemplateId() {
+    nextTemplateId = 1;
+  }
 
   hostRef = React.createRef();
   cachedHTML = "";
+  hostSelector = "";
 
   state = {
     keys: [],
     hosts: {}
   };
 
-  renderTemplate(string, values, valueTags, defaultValueTag) {
-    const { hosts } = this.state;
-    const portals = [];
-    let getKey;
-    let getPortal;
-    if (isServer) {
-      getKey = name => name;
-      getPortal = () => null;
-    } else {
-      const keyMap = new Map();
-      getKey = name => {
-        const number = (keyMap.get(name) || 0) + 1;
-        keyMap.set(name, number);
-        return `${name}:${number}`;
-      };
-      getPortal = (key, value) => {
-        const host = hosts[key];
-        return host ? ReactDOM.createPortal(value, host) : null;
-      };
-    }
-    let html = string.replace(regex, (match, placeholder, name) => {
-      const key = getKey(name);
-      const value = values[name];
-      const tag = valueTags[name] || defaultValueTag;
-      return defaultRenderer(key, value, tag, getPortal, portals);
-    });
-    if (isServer && portals.length) {
-      if (!parseHTML) {
-        parseHTML = require("html-react-parser");
-      }
-      html = parseHTML(html, {
-        replace(node) {
-          if (node.attribs) {
-            const name = node.attribs[attr];
-            if (name) {
-              const tag = valueTags[name] || defaultValueTag;
-              const props = { [attr]: name };
-              return React.createElement(tag, props, values[name]);
-            }
-          }
-        }
-      });
-    }
-    return { html, portals };
-  }
-
   collectHosts() {
-    const placeholders = this.hostRef.current.querySelectorAll(`[${attr}]`);
+    const placeholders = this.hostRef.current.querySelectorAll(
+      `[${this.hostSelector}]`
+    );
     const keys = [];
     const hosts = {};
     placeholders.forEach(node => {
@@ -144,55 +96,117 @@ export default class Template extends React.PureComponent {
     }
   }
 
+  renderValue(name, value, tag, getKey, createPortal) {
+    if (typeof value === "string") {
+      return value;
+    } else if (value == null) {
+      return "";
+    } else if (React.isValidElement(value)) {
+      const key = getKey(name);
+      createPortal(key, value);
+      let id = "";
+      if (!isServer) {
+        if (!this.hostSelector) {
+          this.hostSelector = `data-template-id="${nextTemplateId++}"`;
+        }
+        id = ` ${this.hostSelector}`;
+      }
+      return `<${tag}${id} data-template-key="${key}"></${tag}>`;
+    }
+    return value.toString();
+  }
+
+  renderTemplate(string, valuePattern, values, valueTags, defaultValueTag) {
+    const { hosts } = this.state;
+    const portals = [];
+    let getKey;
+    let createPortal;
+    if (isServer) {
+      getKey = name => name;
+      createPortal = () => {
+        portals.push(null);
+      };
+    } else {
+      const keyMap = new Map();
+      getKey = name => {
+        const number = (keyMap.get(name) || 0) + 1;
+        keyMap.set(name, number);
+        return `${name}:${number}`;
+      };
+      createPortal = (key, value) => {
+        const host = hosts[key];
+        portals.push(host ? ReactDOM.createPortal(value, host) : null);
+      };
+    }
+    let html = string.replace(valuePattern, (match, placeholder, name) => {
+      const value = values[name];
+      const tag = valueTags[name] || defaultValueTag;
+      return this.renderValue(name, value, tag, getKey, createPortal);
+    });
+    if (isServer && portals.length) {
+      if (!parseHTML) {
+        parseHTML = require("html-react-parser");
+      }
+      html = parseHTML(html, {
+        replace(node) {
+          if (node.attribs) {
+            const name = node.attribs["data-template-key"];
+            if (name) {
+              const tag = valueTags[name] || defaultValueTag;
+              return React.createElement(tag, {}, values[name]);
+            }
+          }
+        }
+      });
+    }
+    return { html, portals };
+  }
+
   render() {
     const {
+      as: Host,
       string,
+      valuePattern,
       values,
       valueTags,
       defaultValueTag,
-      renderer,
-      as: Host,
       ...hostProps
     } = this.props;
 
     const { html, portals } = this.renderTemplate(
       string,
+      valuePattern,
       values,
       valueTags,
       defaultValueTag
     );
 
-    if (isServer && typeof html !== "string") {
-      return <Host>{html}</Host>;
+    if (isServer) {
+      if (typeof html === "string") {
+        hostProps.dangerouslySetInnerHTML = { __html: html };
+      } else {
+        hostProps.children = html;
+      }
+      return React.createElement(Host, hostProps);
     }
 
-    // Save rendered HTML for `componentDidMount`.
-    if (!isServer) {
-      this.cachedHTML = html;
-    }
-
-    // Optimize rendering by skipping work if we know there are no placeholders
-    // for injecting React elements.
+    // Optimize rendering by skipping work if we know there are no placeholder
+    // elements (for rendering React components).
     this.hasPlaceholders = portals.length > 0;
+    // This is necessary because if there are placeholders and this element is
+    // being hydrated from SSR, the initial render will fail to use
+    // `dangerouslySetInnerHTML`. React will either refuse to patch up the
+    // mismatched DOM or get confused about the contents of the node. We set
+    // this here so that we can set `innerHTML` ourselves in
+    // `componentDidMount` in order to (1) show the correct content and (2)
+    // succeed at finding placeholders with `querySelectorAll`.
+    this.cachedHTML = html;
 
-    // This is necessary because the initial client-side render intentionally
-    // ommitted `dangerouslySetInnerHTML`. If it had been included, and this
-    // element was hydrated from SSR, then React would either refuse to patch
-    // up the mismatched DOM value anyway, or get confused about the contents
-    // of the host node. We set this here so that (1) the client-side render
-    // shows something right away (even though placeholder elements will be
-    // empty), and (2) the `querySelectorAll` call in `collectHosts` finds the
-    // placeholders.
-    const shouldAvoidMismatch =
-      !isServer && !this.hostRef.current && this.hasPlaceholders;
+    hostProps.ref = this.hostRef;
+    hostProps.dangerouslySetInnerHTML = { __html: html };
+    hostProps.suppressHydrationWarning = true;
 
-    if (shouldAvoidMismatch) {
-      hostProps.suppressHydrationWarning = true;
-    } else {
-      hostProps.dangerouslySetInnerHTML = { __html: html };
-    }
-
-    const host = <Host ref={this.hostRef} {...hostProps} />;
+    const host = React.createElement(Host, hostProps);
 
     return this.hasPlaceholders
       ? React.createElement(React.Fragment, {}, host, ...portals)

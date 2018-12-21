@@ -1,9 +1,40 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Template browser can render templates inside templates 1`] = `
+<div>
+  A: 
+  <span
+    data-template-id="1"
+    data-template-key="test:1"
+  >
+    <div>
+      B: 
+      <span
+        data-template-id="2"
+        data-template-key="test:1"
+      >
+        <div>
+          C: 
+          <span
+            data-template-id="3"
+            data-template-key="test:1"
+          >
+            <span>
+              OK!
+            </span>
+          </span>
+        </div>
+      </span>
+    </div>
+  </span>
+</div>
+`;
+
 exports[`Template browser can render values into a different host tag 1`] = `
 <div>
   Hey! 
   <header
+    data-template-id="1"
     data-template-key="title:1"
   >
     <h1>
@@ -17,6 +48,7 @@ exports[`Template browser can supply a default host tag 1`] = `
 <div>
   Hey! 
   <section
+    data-template-id="1"
     data-template-key="title:1"
   >
     <h1>
@@ -39,6 +71,7 @@ exports[`Template browser renders React placeholders 1`] = `
   <h1>
     Chapter 1: 
     <span
+      data-template-id="1"
       data-template-key="title:1"
     >
       A 
@@ -69,6 +102,7 @@ exports[`Template browser renders template updates 1`] = `
 <div>
   Hey! 
   <span
+    data-template-id="1"
     data-template-key="title:1"
   >
     <h1>
@@ -77,6 +111,7 @@ exports[`Template browser renders template updates 1`] = `
   </span>
    …and again… 
   <span
+    data-template-id="1"
     data-template-key="title:2"
   >
     <h1>
@@ -102,6 +137,7 @@ exports[`Template browser renders value updates 1`] = `
 <div>
   Hey! 
   <span
+    data-template-id="1"
     data-template-key="title:1"
   >
     <h2>
@@ -111,12 +147,31 @@ exports[`Template browser renders value updates 1`] = `
 </div>
 `;
 
+exports[`Template server can render templates inside templates 1`] = `
+<div>
+  A: 
+  <span>
+    <div>
+      B: 
+      <span>
+        <div>
+          C: 
+          <span>
+            <span>
+              OK!
+            </span>
+          </span>
+        </div>
+      </span>
+    </div>
+  </span>
+</div>
+`;
+
 exports[`Template server can render values into a different host tag 1`] = `
 <div>
   Hey! 
-  <header
-    data-template-key="title"
-  >
+  <header>
     <h1>
       A Good Test
     </h1>
@@ -127,9 +182,7 @@ exports[`Template server can render values into a different host tag 1`] = `
 exports[`Template server can supply a default host tag 1`] = `
 <div>
   Hey! 
-  <section
-    data-template-key="title"
-  >
+  <section>
     <h1>
       A Good Test
     </h1>
@@ -149,9 +202,7 @@ exports[`Template server renders React placeholders 1`] = `
 <div>
   <h1>
     Chapter 1: 
-    <span
-      data-template-key="title"
-    >
+    <span>
       A 
       <em>
         Better
@@ -179,17 +230,13 @@ exports[`Template server renders placeholders 1`] = `
 exports[`Template server renders template updates 1`] = `
 <div>
   Hey! 
-  <span
-    data-template-key="title"
-  >
+  <span>
     <h1>
       A Good Test
     </h1>
   </span>
    …and again… 
-  <span
-    data-template-key="title"
-  >
+  <span>
     <h1>
       A Good Test
     </h1>
@@ -212,9 +259,7 @@ exports[`Template server renders the given string into the supplied DOM element 
 exports[`Template server renders value updates 1`] = `
 <div>
   Hey! 
-  <span
-    data-template-key="title"
-  >
+  <span>
     <h2>
       A Bad Test
     </h2>

@@ -3,6 +3,10 @@ import { render } from "react-testing-library";
 let Template;
 
 function defineTests() {
+  afterEach(() => {
+    Template.resetTemplateId();
+  });
+
   it("renders the given string into a div", () => {
     const { container } = render(<Template string="Hi there!" />);
     expect(container.firstChild).toMatchSnapshot();
@@ -129,6 +133,30 @@ function defineTests() {
         string="Hey! {title}"
         values={{ title: <h1>A Good Test</h1> }}
         defaultValueTag="section"
+      />
+    );
+    expect(container.firstChild).toMatchSnapshot();
+  });
+
+  it("can render templates inside templates", () => {
+    const { container } = render(
+      <Template
+        string="A: {test}"
+        values={{
+          test: (
+            <Template
+              string="B: {test}"
+              values={{
+                test: (
+                  <Template
+                    string="C: {test}"
+                    values={{ test: <span>OK!</span> }}
+                  />
+                )
+              }}
+            />
+          )
+        }}
       />
     );
     expect(container.firstChild).toMatchSnapshot();

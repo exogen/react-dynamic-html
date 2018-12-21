@@ -17,8 +17,8 @@ Because sometimes you just need to work with HTML from an older system or CMS.
 import Template from "react-dynamic-html";
 
 /**
- * This app shows off rendering interactive React components and dynamic values
- * into an HTML string.
+ * This app shows off rendering interactive React components and
+ * dynamic values into an HTML string.
  */
 class App extends React.Component {
   state = {

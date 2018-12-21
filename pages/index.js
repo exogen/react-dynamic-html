@@ -69,15 +69,7 @@ export default class DemoPage extends React.Component {
           string={dynamicTemplate}
           values={{
             title: "It worked!",
-            button: <StatefulButton>Click here!</StatefulButton>,
-            otherThing: (
-              <Template
-                string="Ha! Now click <em>{button}</em>…"
-                values={{
-                  button: <StatefulButton>here</StatefulButton>
-                }}
-              />
-            )
+            button: <StatefulButton>Click here!</StatefulButton>
           }}
         />
         <NameApp />
