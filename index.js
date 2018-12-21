@@ -2,7 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
+// Only used server-side to transform HTML into a React component tree.
 let parseHTML;
+
 // Only used client-side to target nodes to find with `querySelectorAll`. We
 // can't just use `[data-template-key]` because a Template can render another
 // Template inside. A Template should only find its own placeholder nodes. Only
@@ -10,6 +12,8 @@ let parseHTML;
 // increment the counter.
 let nextTemplateId = 1;
 
+// The build process will inline the value of `process.browser` so that any
+// server-only branches will be stripped out.
 const isServer = !process.browser;
 
 export default class Template extends React.PureComponent {
