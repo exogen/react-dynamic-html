@@ -96,6 +96,43 @@ function defineTests() {
     );
     expect(container.firstChild).toMatchSnapshot();
   });
+
+  it("renders with the correct context", () => {
+    const Context = React.createContext("FAIL");
+    const consumer = (
+      <Context.Consumer>
+        {value => <h1 data-testid="consumer">{value}</h1>}
+      </Context.Consumer>
+    );
+    const { getByTestId } = render(
+      <Context.Provider value="PASS">
+        <Template string="<div>{consumer}</div>" values={{ consumer }} />
+      </Context.Provider>
+    );
+    expect(getByTestId("consumer")).toHaveTextContent("PASS");
+  });
+
+  it("can render values into a different host tag", () => {
+    const { container } = render(
+      <Template
+        string="Hey! {title}"
+        values={{ title: <h1>A Good Test</h1> }}
+        valueTags={{ title: "header" }}
+      />
+    );
+    expect(container.firstChild).toMatchSnapshot();
+  });
+
+  it("can supply a default host tag", () => {
+    const { container } = render(
+      <Template
+        string="Hey! {title}"
+        values={{ title: <h1>A Good Test</h1> }}
+        defaultValueTag="section"
+      />
+    );
+    expect(container.firstChild).toMatchSnapshot();
+  });
 }
 
 describe("Template", () => {

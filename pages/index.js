@@ -48,7 +48,7 @@ class NameApp extends React.Component {
 
 export default class DemoPage extends React.Component {
   state = {
-    dynamicTemplate: "<h1>It worked!</h1>"
+    dynamicTemplate: "<h1>{title}</h1><p>See: {button}</p>"
   };
 
   handleChange = event => {

@@ -1,5 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Template browser can render values into a different host tag 1`] = `
+<div>
+  Hey! 
+  <header
+    data-template-key="title:1"
+  >
+    <h1>
+      A Good Test
+    </h1>
+  </header>
+</div>
+`;
+
+exports[`Template browser can supply a default host tag 1`] = `
+<div>
+  Hey! 
+  <section
+    data-template-key="title:1"
+  >
+    <h1>
+      A Good Test
+    </h1>
+  </section>
+</div>
+`;
+
 exports[`Template browser passes props to the rendered element 1`] = `
 <div
   class="StyledTemplate"
@@ -85,6 +111,32 @@ exports[`Template browser renders value updates 1`] = `
 </div>
 `;
 
+exports[`Template server can render values into a different host tag 1`] = `
+<div>
+  Hey! 
+  <header
+    data-template-key="title"
+  >
+    <h1>
+      A Good Test
+    </h1>
+  </header>
+</div>
+`;
+
+exports[`Template server can supply a default host tag 1`] = `
+<div>
+  Hey! 
+  <section
+    data-template-key="title"
+  >
+    <h1>
+      A Good Test
+    </h1>
+  </section>
+</div>
+`;
+
 exports[`Template server passes props to the rendered element 1`] = `
 <div
   class="StyledTemplate"
@@ -98,7 +150,7 @@ exports[`Template server renders React placeholders 1`] = `
   <h1>
     Chapter 1: 
     <span
-      data-template-key="title:1"
+      data-template-key="title"
     >
       A 
       <em>
@@ -128,7 +180,7 @@ exports[`Template server renders template updates 1`] = `
 <div>
   Hey! 
   <span
-    data-template-key="title:1"
+    data-template-key="title"
   >
     <h1>
       A Good Test
@@ -136,7 +188,7 @@ exports[`Template server renders template updates 1`] = `
   </span>
    …and again… 
   <span
-    data-template-key="title:2"
+    data-template-key="title"
   >
     <h1>
       A Good Test
@@ -161,7 +213,7 @@ exports[`Template server renders value updates 1`] = `
 <div>
   Hey! 
   <span
-    data-template-key="title:1"
+    data-template-key="title"
   >
     <h2>
       A Bad Test

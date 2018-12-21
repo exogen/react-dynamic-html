@@ -4,32 +4,19 @@ import PropTypes from "prop-types";
 
 const emptyValues = {};
 const regex = /(\{([$\w]+)\})/g;
-let renderToString;
+const attr = "data-template-key";
+let parseHTML;
 
 const isServer = !process.browser;
 
-function defaultRenderer(name, value, key, hosts, portals) {
+function defaultRenderer(key, value, tag, getPortal, portals) {
   if (typeof value === "string") {
     return value;
   } else if (value == null) {
     return "";
   } else if (React.isValidElement(value)) {
-    let serializedValue = "";
-    if (isServer) {
-      if (!renderToString) {
-        renderToString = require("react-dom/server").renderToStaticMarkup;
-      }
-      serializedValue = renderToString(value);
-    } else {
-      const host = hosts[key];
-      if (host) {
-        portals.push(ReactDOM.createPortal(value, host));
-      } else {
-        // Still need to know that there are placeholders in the template.
-        portals.push(null);
-      }
-    }
-    return `<span data-template-key="${key}">${serializedValue}</span>`;
+    portals.push(getPortal(key, value));
+    return `<${tag} ${attr}="${key}"></${tag}>`;
   }
   return value.toString();
 }
@@ -39,13 +26,17 @@ export default class Template extends React.PureComponent {
     as: PropTypes.string,
     renderer: PropTypes.func,
     string: PropTypes.string.isRequired,
-    values: PropTypes.object
+    values: PropTypes.objectOf(PropTypes.node),
+    valueTags: PropTypes.objectOf(PropTypes.string),
+    defaultValueTag: PropTypes.string
   };
 
   static defaultProps = {
     as: "div",
     renderer: defaultRenderer,
-    values: emptyValues
+    values: emptyValues,
+    valueTags: emptyValues,
+    defaultValueTag: "span"
   };
 
   hostRef = React.createRef();
@@ -56,24 +47,54 @@ export default class Template extends React.PureComponent {
     hosts: {}
   };
 
-  renderTemplate(string, values) {
+  renderTemplate(string, values, valueTags, defaultValueTag) {
     const { hosts } = this.state;
     const portals = [];
-    const keyMap = new Map();
-    const html = string.replace(regex, (match, placeholder, name) => {
-      const number = (keyMap.get(name) || 0) + 1;
-      keyMap.set(name, number);
-      const key = `${name}:${number}`;
+    let getKey;
+    let getPortal;
+    if (isServer) {
+      getKey = name => name;
+      getPortal = () => null;
+    } else {
+      const keyMap = new Map();
+      getKey = name => {
+        const number = (keyMap.get(name) || 0) + 1;
+        keyMap.set(name, number);
+        return `${name}:${number}`;
+      };
+      getPortal = (key, value) => {
+        const host = hosts[key];
+        return host ? ReactDOM.createPortal(value, host) : null;
+      };
+    }
+    let html = string.replace(regex, (match, placeholder, name) => {
+      const key = getKey(name);
       const value = values[name];
-      return defaultRenderer(name, value, key, hosts, portals);
+      const tag = valueTags[name] || defaultValueTag;
+      return defaultRenderer(key, value, tag, getPortal, portals);
     });
+    if (isServer && portals.length) {
+      if (!parseHTML) {
+        parseHTML = require("html-react-parser");
+      }
+      html = parseHTML(html, {
+        replace(node) {
+          if (node.attribs) {
+            const name = node.attribs[attr];
+            if (name) {
+              const tag = valueTags[name] || defaultValueTag;
+              const props = { [attr]: name };
+              return React.createElement(tag, props, values[name]);
+            }
+          }
+        }
+      });
+    }
     return { html, portals };
   }
 
   collectHosts() {
-    const placeholders = this.hostRef.current.querySelectorAll(
-      "[data-template-key]"
-    );
+    const placeholders = this.hostRef.current.querySelectorAll(`[${attr}]`);
     const keys = [];
     const hosts = {};
     placeholders.forEach(node => {
@@ -124,8 +145,26 @@ export default class Template extends React.PureComponent {
   }
 
   render() {
-    const { string, values, renderer, as: Host, ...hostProps } = this.props;
-    const { html, portals } = this.renderTemplate(string, values);
+    const {
+      string,
+      values,
+      valueTags,
+      defaultValueTag,
+      renderer,
+      as: Host,
+      ...hostProps
+    } = this.props;
+
+    const { html, portals } = this.renderTemplate(
+      string,
+      values,
+      valueTags,
+      defaultValueTag
+    );
+
+    if (isServer && typeof html !== "string") {
+      return <Host>{html}</Host>;
+    }
 
     // Save rendered HTML for `componentDidMount`.
     if (!isServer) {
