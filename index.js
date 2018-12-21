@@ -16,6 +16,8 @@ let nextTemplateId = 1;
 // server-only branches will be stripped out.
 const isServer = !process.browser;
 
+const EMPTY_OBJECT = {};
+
 export default class Template extends React.PureComponent {
   static propTypes = {
     as: PropTypes.string,
@@ -30,8 +32,8 @@ export default class Template extends React.PureComponent {
     as: "div",
     defaultValueTag: "span",
     valuePattern: /(\{([$\w]+)\})/g,
-    values: {},
-    valueTags: {}
+    values: EMPTY_OBJECT,
+    valueTags: EMPTY_OBJECT
   };
 
   static resetTemplateId() {
@@ -44,7 +46,7 @@ export default class Template extends React.PureComponent {
 
   state = {
     keys: [],
-    hosts: {}
+    hosts: EMPTY_OBJECT
   };
 
   collectHosts() {
@@ -157,7 +159,7 @@ export default class Template extends React.PureComponent {
             const name = node.attribs["data-template-key"];
             if (name) {
               const tag = valueTags[name] || defaultValueTag;
-              return React.createElement(tag, {}, values[name]);
+              return React.createElement(tag, EMPTY_OBJECT, values[name]);
             }
           }
         }
@@ -213,7 +215,7 @@ export default class Template extends React.PureComponent {
     const host = React.createElement(Host, hostProps);
 
     return this.hasPlaceholders
-      ? React.createElement(React.Fragment, {}, host, ...portals)
+      ? React.createElement(React.Fragment, EMPTY_OBJECT, host, ...portals)
       : host;
   }
 }
