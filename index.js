@@ -5,217 +5,252 @@ import PropTypes from "prop-types";
 // Only used server-side to transform HTML into a React component tree.
 let parseHTML;
 
-// Only used client-side to target nodes to find with `querySelectorAll`. We
-// can't just use `[data-template-key]` because a Template can render another
-// Template inside. A Template should only find its own placeholder nodes. Only
+// Only used client-side to target nodes with `querySelectorAll`. We can't just
+// use `[data-template-key]` because a Template can render another Template
+// inside, and a Template should only find its own placeholder nodes. Only
 // Template instances that render placeholders will be assigned an ID and
 // increment the counter.
 let nextTemplateId = 1;
 
-// The build process will inline the value of `process.browser` so that any
-// server-only branches will be stripped out.
-const isServer = !process.browser;
-
+// Used for all immutable empty objects.
 const EMPTY_OBJECT = {};
+
+const escapeChars = {
+  "'": "&#39",
+  '"': "&quot;",
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;"
+};
+
+function escape(value) {
+  return value.replace(/['"&<>]/g, match => escapeChars[match]);
+}
 
 export default class Template extends React.PureComponent {
   static propTypes = {
+    /**
+     * The DOM element type in which to render the entire template.
+     */
     as: PropTypes.string,
+    /**
+     * The DOM element type in which to render React element values by default.
+     * To override the tag for individual values, use `valueTags`.
+     */
     defaultValueTag: PropTypes.string,
+    /**
+     * Whether or not to escape values inserted into the HTML.
+     */
+    escapeValues: PropTypes.bool,
+    /**
+     * The template HTML string.
+     */
     string: PropTypes.string.isRequired,
+    /**
+     * The string or RegExp that specifies the variable substitution syntax.
+     * Each instance will be replaced. The second capture group should be the
+     * name of the variable.
+     */
     valuePattern: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    /**
+     * An object mapping variable names (used in the template string) to their
+     * values. React element values will be rendered into a placeholder node.
+     */
     values: PropTypes.object,
+    /**
+     * The DOM element type in which to render specific React elements that
+     * appear in `values`. Only React elements are wrapped.
+     */
     valueTags: PropTypes.objectOf(PropTypes.string)
+  };
+
+  /**
+   * Resets the template ID counter.
+   * Only necessary when you have tests that might care about the generated IDs.
+   */
+  static reset = () => {
+    nextTemplateId = 1;
   };
 
   static defaultProps = {
     as: "div",
     defaultValueTag: "span",
+    escapeValues: true,
     valuePattern: /(\{([$\w]+)\})/g,
-    values: EMPTY_OBJECT,
-    valueTags: EMPTY_OBJECT
+    valueTags: EMPTY_OBJECT,
+    values: EMPTY_OBJECT
   };
-
-  static resetTemplateId() {
-    nextTemplateId = 1;
-  }
-
-  hostRef = React.createRef();
-  cachedHTML = "";
-  hostSelector = "";
 
   state = {
-    keys: [],
-    hosts: EMPTY_OBJECT
+    hostNodes: EMPTY_OBJECT
   };
 
-  collectHosts() {
-    const placeholders = this.hostRef.current.querySelectorAll(
-      `[${this.hostSelector}]`
-    );
-    const keys = [];
-    const hosts = {};
-    placeholders.forEach(node => {
-      const key = node.dataset.templateKey;
-      keys.push(key);
-      hosts[key] = node;
-    });
-    return { keys, hosts };
-  }
-
-  recycleHosts(keys, hosts) {
-    const { keys: prevKeys, hosts: prevHosts } = this.state;
-    let hostsChanged = keys.length !== prevKeys.length;
-    keys.forEach(key => {
-      const host = hosts[key];
-      const prevHost = prevHosts[key];
-      if (host === prevHost) {
-        return;
-      } else if (prevHost && host.tagName === prevHost.tagName) {
-        host.parentNode.replaceChild(prevHost, host);
-        hosts[key] = prevHost;
-      } else {
-        hostsChanged = true;
-      }
-    });
-    return hostsChanged;
-  }
-
-  updateHosts(prevState) {
-    const { keys, hosts } = this.collectHosts();
-    const hostsChanged = prevState ? this.recycleHosts(keys, hosts) : true;
-    if (hostsChanged) {
-      this.setState({ keys, hosts });
-    }
-  }
+  wrapperRef = React.createRef();
+  renderRef = React.createRef();
+  hostAttribute = "";
 
   componentDidMount() {
-    if (this.hasPlaceholders) {
-      this.hostRef.current.innerHTML = this.cachedHTML;
-      this.updateHosts();
+    if (!process.browser) {
+      return;
     }
+    const [html, hostElements] = this.renderRef.current;
+    this.wrapperRef.current.innerHTML = html;
+    this.updateNodes();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.hasPlaceholders || prevState.keys.length) {
-      this.updateHosts(prevState);
-    }
+  componentDidUpdate() {
+    this.updateNodes();
   }
 
-  renderValue(name, value, tag, getKey, createPortal) {
-    if (typeof value === "string") {
-      return value;
-    } else if (value == null) {
-      return "";
-    } else if (React.isValidElement(value)) {
-      const key = getKey(name);
-      createPortal(key, value);
-      let id = "";
-      if (!isServer) {
-        if (!this.hostSelector) {
-          this.hostSelector = `data-template-id="${nextTemplateId++}"`;
-        }
-        id = ` ${this.hostSelector}`;
-      }
-      return `<${tag}${id} data-template-key="${key}"></${tag}>`;
-    }
-    return value.toString();
-  }
+  updateNodes() {
+    const { hostNodes } = this.state;
+    const [html, hostElements] = this.renderRef.current;
+    const nextHostNodes = {};
+    let hostsChanged = false;
 
-  renderTemplate(string, valuePattern, values, valueTags, defaultValueTag) {
-    const { hosts } = this.state;
-    const portals = [];
-    let getKey;
-    let createPortal;
-    if (isServer) {
-      getKey = name => name;
-      createPortal = () => {
-        portals.push(null);
-      };
-    } else {
-      const keyMap = new Map();
-      getKey = name => {
-        const number = (keyMap.get(name) || 0) + 1;
-        keyMap.set(name, number);
-        return `${name}:${number}`;
-      };
-      createPortal = (key, value) => {
-        const host = hosts[key];
-        portals.push(host ? ReactDOM.createPortal(value, host) : null);
-      };
-    }
-    let html = string.replace(valuePattern, (match, placeholder, name) => {
-      const value = values[name];
-      const tag = valueTags[name] || defaultValueTag;
-      return this.renderValue(name, value, tag, getKey, createPortal);
-    });
-    if (isServer && portals.length) {
-      if (!parseHTML) {
-        parseHTML = require("html-react-parser");
-      }
-      html = parseHTML(html, {
-        replace(node) {
-          if (node.attribs) {
-            const name = node.attribs["data-template-key"];
-            if (name) {
-              const tag = valueTags[name] || defaultValueTag;
-              return React.createElement(tag, EMPTY_OBJECT, values[name]);
-            }
+    if (hostElements.length) {
+      this.wrapperRef.current
+        .querySelectorAll(`[${this.hostAttribute}]`)
+        .forEach(node => {
+          const key = node.dataset.templateKey;
+          const prevNode = hostNodes[key];
+          if (node === prevNode) {
+            return;
+          } else if (prevNode && prevNode.tagName === node.tagName) {
+            node.parentNode.replaceChild(prevNode, node);
+            node = prevNode;
+          } else {
+            hostsChanged = true;
           }
-        }
-      });
+          nextHostNodes[key] = node;
+        });
     }
-    return { html, portals };
+
+    hostsChanged =
+      hostsChanged || Object.keys(hostNodes).length !== hostElements.length;
+
+    if (hostsChanged) {
+      this.setState({ hostNodes: nextHostNodes });
+    }
   }
 
-  render() {
+  renderTemplate() {
     const {
-      as: Host,
       string,
       valuePattern,
       values,
       valueTags,
       defaultValueTag,
-      ...hostProps
+      escapeValues
     } = this.props;
 
-    const { html, portals } = this.renderTemplate(
-      string,
-      valuePattern,
-      values,
-      valueTags,
-      defaultValueTag
-    );
-
-    if (isServer) {
-      if (typeof html === "string") {
-        hostProps.dangerouslySetInnerHTML = { __html: html };
-      } else {
-        hostProps.children = html;
+    const keyMap = process.browser ? {} : EMPTY_OBJECT;
+    const hostElements = [];
+    const regex =
+      typeof valuePattern === "string"
+        ? new RegExp(valuePattern, "g")
+        : valuePattern;
+    const html = string.replace(regex, (match, placeholder, name) => {
+      let value = values[name];
+      if (typeof value !== "string") {
+        if (value == null) {
+          return "";
+        } else if (Array.isArray(value) || React.isValidElement(value)) {
+          const tag = valueTags[name] || defaultValueTag;
+          if (!process.browser) {
+            hostElements.push(null);
+            return `<${tag} data-template-name="${name}"></${tag}>`;
+          } else {
+            const count = (keyMap[name] = (keyMap[name] || 0) + 1);
+            const key = `${name}:${count}`;
+            hostElements.push([key, value]);
+            if (!this.hostAttribute) {
+              this.hostAttribute = `data-template-id="${nextTemplateId++}"`;
+            }
+            return `<${tag} ${
+              this.hostAttribute
+            } data-template-key="${key}"></${tag}>`;
+          }
+        } else {
+          value = value.toString();
+        }
       }
-      return React.createElement(Host, hostProps);
+      return escapeValues ? escape(value) : value;
+    });
+
+    if (!process.browser && hostElements.length) {
+      if (!parseHTML) {
+        parseHTML = require("html-react-parser");
+      }
+      return [
+        parseHTML(html, {
+          replace(node) {
+            if (node.attribs) {
+              const name = node.attribs["data-template-name"];
+              if (name) {
+                const Host = valueTags[name] || defaultValueTag;
+                return <Host>{values[name]}</Host>;
+              }
+            }
+          }
+        }),
+        // Whelp, don't need these anymore!
+        []
+      ];
     }
 
-    // Optimize rendering by skipping work if we know there are no placeholder
-    // elements (for rendering React components).
-    this.hasPlaceholders = portals.length > 0;
-    // This is necessary because if there are placeholders and this element is
-    // being hydrated from SSR, the initial render will fail to use
-    // `dangerouslySetInnerHTML`. React will either refuse to patch up the
-    // mismatched DOM or get confused about the contents of the node. We set
-    // this here so that we can set `innerHTML` ourselves in
-    // `componentDidMount` in order to (1) show the correct content and (2)
-    // succeed at finding placeholders with `querySelectorAll`.
-    this.cachedHTML = html;
+    return [html, hostElements];
+  }
 
-    hostProps.ref = this.hostRef;
-    hostProps.dangerouslySetInnerHTML = { __html: html };
-    hostProps.suppressHydrationWarning = true;
+  render() {
+    // The build process will inline the value of `process.browser` so that any
+    // server-only branches will be stripped out via dead code elimination.
+    const initialRender = !this.wrapperRef.current;
 
-    const host = React.createElement(Host, hostProps);
+    const {
+      as: Wrapper,
+      defaultValueTag,
+      escapeValues,
+      string,
+      valuePattern,
+      valueTags,
+      values,
+      ...wrapperProps
+    } = this.props;
 
-    return this.hasPlaceholders
-      ? React.createElement(React.Fragment, EMPTY_OBJECT, host, ...portals)
-      : host;
+    const { hostNodes } = this.state;
+
+    const [html, hostElements] = this.renderTemplate();
+
+    const portals = initialRender
+      ? []
+      : hostElements.map(([key, value]) => {
+          const node = hostNodes[key];
+          if (node) {
+            // The keyed fragment here is necessary to prevent changes in the
+            // order of portals (for example, when a new portal is rendered
+            // before another) from causing unmounts. Portals themselves
+            // seemingly cannot be keyed.
+            return (
+              <React.Fragment key={key}>
+                {ReactDOM.createPortal(value, node)}
+              </React.Fragment>
+            );
+          }
+        });
+
+    if (!process.browser && typeof html !== "string") {
+      wrapperProps.children = html;
+    } else {
+      this.renderRef.current = [html, hostElements];
+      wrapperProps.ref = this.wrapperRef;
+      wrapperProps.key = "template";
+      wrapperProps.suppressHydrationWarning = true;
+      wrapperProps.dangerouslySetInnerHTML = { __html: html };
+    }
+
+    const wrapper = <Wrapper {...wrapperProps} />;
+
+    return portals.length ? [wrapper, ...portals] : wrapper;
   }
 }

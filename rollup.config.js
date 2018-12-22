@@ -14,7 +14,9 @@ const baseConfig = {
   ],
   plugins: [
     babel({
-      ...require("./.babelrc"),
+      presets: [["@babel/preset-env", { loose: true }], "@babel/preset-react"],
+      plugins: [["@babel/plugin-proposal-class-properties", { loose: true }]],
+      babelrc: false,
       exclude: "node_modules/**"
     }),
     resolve(),
@@ -47,7 +49,7 @@ export default [
         format: "cjs"
       }
     ],
-    plugins: [...browserConfig.plugins, terser()]
+    plugins: [...browserConfig.plugins, terser({ toplevel: true })]
   },
   // FIXME: Due to a bug in rollup-plugin-terser, multiple outputs need to be
   // split into separate configurations.
@@ -59,6 +61,6 @@ export default [
         format: "es"
       }
     ],
-    plugins: [...browserConfig.plugins, terser()]
+    plugins: [...browserConfig.plugins, terser({ toplevel: true })]
   }
 ];
