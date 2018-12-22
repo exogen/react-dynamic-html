@@ -11,7 +11,7 @@ Because sometimes you just need to work with HTML from an older system or CMS.
 - Components get the correct context from above
 - Template updates even preserve component state!
 
-## Usage
+## Example
 
 ```js
 import Template from "react-dynamic-html";
@@ -47,6 +47,110 @@ class App extends React.Component {
   }
 }
 ```
+
+## API
+
+<!-- AUTO-GENERATED-CONTENT:START (COMPONENTS) -->
+
+### Template
+
+#### Props
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th colspan="2">Type</th>
+<th width="22%">Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" rowspan="1">as</td>
+<td valign="top" colspan="2">String</td>
+<td valign="top" align="right" rowspan="1">div</td>
+<td valign="top" valign="top" rowspan="1">
+
+The DOM element type in which to render the entire template.
+
+</td>
+</tr>
+<tr>
+<td valign="top" rowspan="1">defaultValueTag</td>
+<td valign="top" colspan="2">String</td>
+<td valign="top" align="right" rowspan="1">span</td>
+<td valign="top" valign="top" rowspan="1">
+
+The DOM element type in which to render React element values by default.
+To override the tag for individual values, use `valueTags`.
+
+</td>
+</tr>
+<tr>
+<td valign="top" rowspan="1">escapeValues</td>
+<td valign="top" colspan="2">Boolean</td>
+<td valign="top" align="right" rowspan="1">true</td>
+<td valign="top" valign="top" rowspan="1">
+
+Whether or not to escape values inserted into the HTML.
+
+</td>
+</tr>
+<tr>
+<td valign="top" rowspan="1"><strong title="Required">string</strong></td>
+<td valign="top" colspan="2">String</td>
+<td valign="top" align="right" rowspan="1"></td>
+<td valign="top" valign="top" rowspan="1">
+
+The template HTML string.
+
+</td>
+</tr>
+<tr>
+<td valign="top" rowspan="1">valuePattern</td>
+<td valign="top" colspan="2">
+One&nbsp;of… <br>
+&nbsp;&nbsp;String <br>
+&nbsp;&nbsp;Object
+</td>
+<td valign="top" align="right" rowspan="1"><code style="white-space: nowrap">/(\{([$\w]+)\})/g</code></td>
+<td valign="top" valign="top" rowspan="1">
+
+The string or RegExp that specifies the variable substitution syntax.
+Each instance will be replaced. The second capture group should be the
+name of the variable.
+
+</td>
+</tr>
+<tr>
+<td valign="top" rowspan="1">values</td>
+<td valign="top" colspan="2">Object</td>
+<td valign="top" align="right" rowspan="1"><code title="empty object">{}</code></td>
+<td valign="top" valign="top" rowspan="1">
+
+An object mapping variable names (used in the template string) to their
+values. React element values will be rendered into a placeholder node.
+
+</td>
+</tr>
+<tr>
+<td valign="top" rowspan="1">valueTags</td>
+<td valign="top" colspan="2">
+Object&nbsp;of… <br>
+&nbsp;&nbsp;String
+</td>
+<td valign="top" align="right" rowspan="1"><code title="empty object">{}</code></td>
+<td valign="top" valign="top" rowspan="1">
+
+The DOM element type in which to render specific React elements that
+appear in `values`. Only React elements are wrapped.
+
+</td>
+</tr>
+</tbody>
+</table>
+<!-- AUTO-GENERATED-CONTENT:END -->
 
 ## Other Solutions
 

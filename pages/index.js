@@ -38,6 +38,7 @@ const OutputTemplate = styled(Template)`
 `;
 
 const Button = styled.button`
+  min-width: 7em;
   border: 0;
   border-radius: 2px;
   margin: 2px 10px;
