@@ -31,7 +31,7 @@ function buildDocs(components) {
       console.log("<tr>");
       console.log("<th>Name</th>");
       console.log('<th colspan="2">Type</th>');
-      console.log('<th width="22%">Default</th>');
+      console.log("<th>Default</th>");
       console.log("<th>Description</th>");
       console.log("</tr>");
       console.log("</thead>");
@@ -157,7 +157,7 @@ function renderValue(value, indent = 0) {
     return "";
   }
   if (value.value.match(/^\/.*\/[ig]*$/)) {
-    return `<code style="white-space: nowrap">${value.value}</code>`;
+    return `<pre>${value.value}</pre>`;
   }
   if (value.value.match(/^true|false$/)) {
     return value.value;

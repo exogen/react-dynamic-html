@@ -61,7 +61,7 @@ class App extends React.Component {
 <tr>
 <th>Name</th>
 <th colspan="2">Type</th>
-<th width="22%">Default</th>
+<th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
@@ -114,7 +114,7 @@ One&nbsp;of… <br>
 &nbsp;&nbsp;String <br>
 &nbsp;&nbsp;Object
 </td>
-<td valign="top" align="right" rowspan="1"><code style="white-space: nowrap">/(\{([$\w]+)\})/g</code></td>
+<td valign="top" align="right" rowspan="1"><pre>/(\{([$\w]+)\})/g</pre></td>
 <td valign="top" valign="top" rowspan="1">
 
 The string or RegExp that specifies the variable substitution syntax.
