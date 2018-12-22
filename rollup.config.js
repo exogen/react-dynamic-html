@@ -6,7 +6,7 @@ import { terser } from "rollup-plugin-terser";
 import pkg from "./package.json";
 
 const baseConfig = {
-  input: "index.js",
+  input: "src/index.js",
   external: ["react", "react-dom", "prop-types"],
   output: [
     { file: pkg.main, format: "cjs" },
@@ -68,7 +68,7 @@ const classImplementation = [
 const hooksImplementations = [
   {
     ...baseConfig,
-    input: "index.hooks.js",
+    input: "src/index.hooks.js",
     output: [
       { file: "./dist/index.hooks.cjs.js", format: "cjs" },
       { file: "./dist/index.hooks.esm.js", format: "es" }
@@ -76,7 +76,7 @@ const hooksImplementations = [
   },
   {
     ...browserConfig,
-    input: "index.hooks.js",
+    input: "src/index.hooks.js",
     output: [
       { file: "./dist/index.hooks.browser.cjs.js", format: "cjs" },
       { file: "./dist/index.hooks.browser.esm.js", format: "es" }
@@ -84,7 +84,7 @@ const hooksImplementations = [
   },
   {
     ...browserConfig,
-    input: "index.hooks.js",
+    input: "src/index.hooks.js",
     output: [
       {
         file: "./dist/index.hooks.browser.cjs.min.js",
@@ -97,7 +97,7 @@ const hooksImplementations = [
   // split into separate configurations.
   {
     ...browserConfig,
-    input: "index.hooks.js",
+    input: "src/index.hooks.js",
     output: [
       {
         file: "./dist/index.hooks.browser.esm.min.js",

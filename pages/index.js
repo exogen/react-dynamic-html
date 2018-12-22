@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Template from "../index";
+import Template from "../src";
 
 const EditorWrapper = styled.section`
   width: 500px;
