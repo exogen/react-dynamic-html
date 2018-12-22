@@ -38,7 +38,7 @@ const browserConfig = {
   ]
 };
 
-export default [
+const classImplementation = [
   baseConfig,
   browserConfig,
   {
@@ -64,3 +64,48 @@ export default [
     plugins: [...browserConfig.plugins, terser({ toplevel: true })]
   }
 ];
+
+const hooksImplementations = [
+  {
+    ...baseConfig,
+    input: "index.hooks.js",
+    output: [
+      { file: "./dist/index.hooks.cjs.js", format: "cjs" },
+      { file: "./dist/index.hooks.esm.js", format: "es" }
+    ]
+  },
+  {
+    ...browserConfig,
+    input: "index.hooks.js",
+    output: [
+      { file: "./dist/index.hooks.browser.cjs.js", format: "cjs" },
+      { file: "./dist/index.hooks.browser.esm.js", format: "es" }
+    ]
+  },
+  {
+    ...browserConfig,
+    input: "index.hooks.js",
+    output: [
+      {
+        file: "./dist/index.hooks.browser.cjs.min.js",
+        format: "cjs"
+      }
+    ],
+    plugins: [...browserConfig.plugins, terser({ toplevel: true })]
+  },
+  // FIXME: Due to a bug in rollup-plugin-terser, multiple outputs need to be
+  // split into separate configurations.
+  {
+    ...browserConfig,
+    input: "index.hooks.js",
+    output: [
+      {
+        file: "./dist/index.hooks.browser.esm.min.js",
+        format: "es"
+      }
+    ],
+    plugins: [...browserConfig.plugins, terser({ toplevel: true })]
+  }
+];
+
+export default [...classImplementation, ...hooksImplementations];

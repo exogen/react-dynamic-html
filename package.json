@@ -43,6 +43,24 @@
     {
       "path": "./dist/index.browser.esm.min.js",
       "maxSize": "1.5KB"
+    },
+    {
+      "path": "./dist/index.hooks.browser.cjs.min.js",
+      "compression": "none",
+      "maxSize": "3KB"
+    },
+    {
+      "path": "./dist/index.hooks.browser.cjs.min.js",
+      "maxSize": "1.5KB"
+    },
+    {
+      "path": "./dist/index.hooks.browser.esm.min.js",
+      "compression": "none",
+      "maxSize": "3KB"
+    },
+    {
+      "path": "./dist/index.hooks.browser.esm.min.js",
+      "maxSize": "1.5KB"
     }
   ],
   "peerDependencies": {

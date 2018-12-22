@@ -1,7 +1,7 @@
 # react-dynamic-html
 
 Like `dangerouslySetInnerHTML` but with simple old-school template substitution,
-where values can be React components.
+where values can be React elements.
 
 Because sometimes you just need to work with HTML from an older system or CMS.
 
@@ -152,6 +152,42 @@ appear in `values`. Only React elements are wrapped.
 </tbody>
 </table>
 <!-- AUTO-GENERATED-CONTENT:END -->
+
+## Motivation
+
+As described in the introduction, sometimes you need to deal with HTML coming
+from another system, often controlled by non-technical colleagues. This usually
+isn’t a problem (just use `dangerouslySetInnerHTML`) – until they request the
+ability to add call-to-action buttons (or other interactive elements) that
+ultimately need to call out to your React app. Unless you’re fine with falling
+back to vanilla JavaScript for this behavior (i.e. doing `querySelector`,
+`addEventListener`, etc. in your lifecycle hooks), now you’ve got a nontrivial
+problem on your hands!
+
+Consider the [FormattedMessage](https://github.com/yahoo/react-intl/wiki/Components#formattedmessage)
+and [FormattedHTMLMessage](https://github.com/yahoo/react-intl/wiki/Components#formattedhtmlmessage)
+components from [react-intl](https://github.com/yahoo/react-intl).
+FormattedMessage values can include React elements:
+
+> `<FormattedMessage>` also supports rich-text formatting by passing React
+> elements to the `values` prop.
+
+On the other hand, FormattedHTMLMessage comes with a disclaimer:
+
+> … the resulting formatted message will be set via `dangerouslySetInnerHTML`.
+> This means that values cannot contain React elements like `<FormattedMessage>`
+> and this component will be less performant.
+
+Using this library, you could make FormattedHTMLMessage work with React
+elements too!
+
+You might think it’s easy to translate HTML into `React.createElement` calls
+in the browser – either by parsing it yourself or injecting it and crawling
+the resulting DOM. There are a handful of libraries that already do this, but
+it requires a nontrivial amount of code: remember that React requires using
+different names for many attributes, and has special handling for others (like
+`style`, where you’d have to parse a string of rules into an object). This is
+both slow and will bloat your bundle size.
 
 ## Other Solutions
 
