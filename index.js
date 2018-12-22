@@ -49,7 +49,8 @@ export default class Template extends React.PureComponent {
     /**
      * The string or RegExp that specifies the variable substitution syntax.
      * Each instance will be replaced. The second capture group should be the
-     * name of the variable.
+     * name of the variable. String values will be passed to RegExp with the
+     * `g` flag.
      */
     valuePattern: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     /**

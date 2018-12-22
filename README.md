@@ -120,7 +120,8 @@ One&nbsp;of… <br>
 
 The string or RegExp that specifies the variable substitution syntax.
 Each instance will be replaced. The second capture group should be the
-name of the variable.
+name of the variable. String values will be passed to RegExp with the
+`g` flag.
 
 </td>
 </tr>
