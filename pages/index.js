@@ -3,11 +3,11 @@ import styled from "styled-components";
 import Template from "../src";
 
 const EditorWrapper = styled.section`
-  width: 500px;
+  width: 800px;
   max-width: 100%;
   margin: 50px auto;
   border: 3px solid rgb(75, 0, 170);
-  border-radius: 2px 0 0 2px;
+  border-radius: 2px;
   font-family: Lato, sans-serif;
   font-size: 14px;
 `;
@@ -17,8 +17,17 @@ const Controls = styled.div`
   align-items: stretch;
 `;
 
+const Number = styled.span`
+  margin: 0 2px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  font-size: 12px;
+  background: rgb(0, 176, 171);
+  color: white;
+`;
+
 const ValuesWrapper = styled.div`
-  flex: 0 0 200px;
+  flex: 0 1 400px;
   background: rgb(75, 0, 170);
   color: white;
 
@@ -41,16 +50,12 @@ const Button = styled.button`
   min-width: 7em;
   border: 0;
   border-radius: 2px;
-  margin: 2px 10px;
+  margin: 0 5px;
   padding: 5px 10px 6px 10px;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1;
   background: rgb(189, 34, 244);
   color: white;
-
-  &:first-child {
-    margin-left: 0;
-  }
 `;
 
 const Editor = styled.textarea`
@@ -64,20 +69,48 @@ const Editor = styled.textarea`
   font-family: Menlo, monospace;
 `;
 
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Arrow = styled.span.attrs(props => ({
+  children: "\u00a0→\u00a0"
+}))`
+  margin: 0 0.25em;
+  font-size: 16px;
+  color: rgb(239, 210, 255);
+`;
+
 function ValueEditor({ values }) {
   const names = Object.keys(values);
   return (
     <ValuesWrapper>
       <table>
         <tbody>
-          {names.map(name => (
-            <tr key={name}>
-              <td>
-                <ValueName>{name}:</ValueName>
-              </td>
-              <td>{values[name]}</td>
-            </tr>
-          ))}
+          {names.map(name => {
+            let value = values[name];
+            const isElement = React.isValidElement(value);
+            if (isElement) {
+              value = (
+                <Row>
+                  <span>
+                    {`<${value.type.displayName || value.type.name}>`}
+                    <Arrow />
+                  </span>
+                  {value}
+                </Row>
+              );
+            }
+            return (
+              <tr key={name}>
+                <td>
+                  <ValueName>{name}:</ValueName>
+                </td>
+                <td>{value}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </ValuesWrapper>
@@ -115,7 +148,7 @@ class EditorDemo extends React.Component {
     values: {
       title: "It worked!",
       button: <StatefulButton>Count</StatefulButton>,
-      list: [1, 2, 3],
+      list: [1, 2, 3].map(number => <Number key={number}>{number}</Number>),
       nested: (
         <Template
           string="ha! {nested}"

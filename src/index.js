@@ -30,9 +30,19 @@ function escape(value) {
 export default class Template extends React.PureComponent {
   static propTypes = {
     /**
-     * The DOM element type in which to render the entire template.
+     * The template HTML string.
      */
-    as: PropTypes.string,
+    string: PropTypes.string.isRequired,
+    /**
+     * An object mapping variable names (used in the template string) to their
+     * values. React element values will be rendered into a placeholder node.
+     */
+    values: PropTypes.object,
+    /**
+     * The DOM element type in which to render specific React elements that
+     * appear in `values`. Only React elements are wrapped.
+     */
+    valueTags: PropTypes.objectOf(PropTypes.string),
     /**
      * The DOM element type in which to render React element values by default.
      * To override the tag for individual values, use `valueTags`.
@@ -43,10 +53,6 @@ export default class Template extends React.PureComponent {
      */
     escapeValues: PropTypes.bool,
     /**
-     * The template HTML string.
-     */
-    string: PropTypes.string.isRequired,
-    /**
      * The string or RegExp that specifies the variable substitution syntax.
      * Each instance will be replaced. The second capture group should be the
      * name of the variable. String values will be passed to RegExp with the
@@ -54,15 +60,9 @@ export default class Template extends React.PureComponent {
      */
     valuePattern: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     /**
-     * An object mapping variable names (used in the template string) to their
-     * values. React element values will be rendered into a placeholder node.
+     * The DOM element type in which to render the entire template.
      */
-    values: PropTypes.object,
-    /**
-     * The DOM element type in which to render specific React elements that
-     * appear in `values`. Only React elements are wrapped.
-     */
-    valueTags: PropTypes.objectOf(PropTypes.string)
+    as: PropTypes.string
   };
 
   /**
