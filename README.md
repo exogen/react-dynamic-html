@@ -5,11 +5,12 @@ where values can be React components.
 
 Because sometimes you just need to work with HTML from an older system or CMS.
 
-- Tiny &lt;1KB client-side bundle, no dependencies necessary
+- Tiny 1KB client-side bundle, no dependencies necessary
 - Template values can be dynamic React components
 - Universal, supports server side rendering (SSR)
 - Components get the correct context from above
 - Template updates even preserve component state!
+- 100% test coverage
 
 ## Example
 
