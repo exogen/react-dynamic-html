@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Template browser can render templates inside templates 1`] = `
+exports[`Template class client-side can render templates inside templates 1`] = `
 <div>
   A: 
   <span
@@ -30,7 +30,7 @@ exports[`Template browser can render templates inside templates 1`] = `
 </div>
 `;
 
-exports[`Template browser can render values into a different host tag 1`] = `
+exports[`Template class client-side can render values into a different host tag 1`] = `
 <div>
   Hey! 
   <header
@@ -44,7 +44,7 @@ exports[`Template browser can render values into a different host tag 1`] = `
 </div>
 `;
 
-exports[`Template browser can supply a default host tag 1`] = `
+exports[`Template class client-side can supply a default host tag 1`] = `
 <div>
   Hey! 
   <section
@@ -58,7 +58,7 @@ exports[`Template browser can supply a default host tag 1`] = `
 </div>
 `;
 
-exports[`Template browser does not unmount moved portals 1`] = `
+exports[`Template class client-side does not unmount moved portals 1`] = `
 <div>
   <div>
     <span
@@ -75,7 +75,7 @@ exports[`Template browser does not unmount moved portals 1`] = `
 </div>
 `;
 
-exports[`Template browser passes props to the rendered element 1`] = `
+exports[`Template class client-side passes props to the rendered element 1`] = `
 <div
   class="StyledTemplate"
 >
@@ -83,7 +83,7 @@ exports[`Template browser passes props to the rendered element 1`] = `
 </div>
 `;
 
-exports[`Template browser renders React placeholders 1`] = `
+exports[`Template class client-side renders React placeholders 1`] = `
 <div>
   <h1>
     Chapter 1: 
@@ -101,7 +101,7 @@ exports[`Template browser renders React placeholders 1`] = `
 </div>
 `;
 
-exports[`Template browser renders numbers, undefined, null, arrays, and objects 1`] = `
+exports[`Template class client-side renders numbers, undefined, null, arrays, and objects 1`] = `
 <div>
   Types: 0, , , 
   <span
@@ -116,7 +116,7 @@ exports[`Template browser renders numbers, undefined, null, arrays, and objects 
 </div>
 `;
 
-exports[`Template browser renders placeholders 1`] = `
+exports[`Template class client-side renders placeholders 1`] = `
 <div>
   <h1>
     Chapter 1: A Good Test
@@ -124,7 +124,7 @@ exports[`Template browser renders placeholders 1`] = `
 </div>
 `;
 
-exports[`Template browser renders template updates 1`] = `
+exports[`Template class client-side renders template updates 1`] = `
 <div>
   Hey! 
   <span
@@ -147,19 +147,19 @@ exports[`Template browser renders template updates 1`] = `
 </div>
 `;
 
-exports[`Template browser renders the given string into a div 1`] = `
+exports[`Template class client-side renders the given string into a div 1`] = `
 <div>
   Hi there!
 </div>
 `;
 
-exports[`Template browser renders the given string into the supplied DOM element type 1`] = `
+exports[`Template class client-side renders the given string into the supplied DOM element type 1`] = `
 <span>
   Hi there!
 </span>
 `;
 
-exports[`Template browser renders value updates 1`] = `
+exports[`Template class client-side renders value updates 1`] = `
 <div>
   Hey! 
   <span
@@ -173,7 +173,7 @@ exports[`Template browser renders value updates 1`] = `
 </div>
 `;
 
-exports[`Template browser supports string value patterns 1`] = `
+exports[`Template class client-side supports string value patterns 1`] = `
 <div>
   Hey! 
   <span
@@ -187,7 +187,7 @@ exports[`Template browser supports string value patterns 1`] = `
 </div>
 `;
 
-exports[`Template server can render templates inside templates 1`] = `
+exports[`Template class server-side can render templates inside templates 1`] = `
 <div>
   A: 
   <span>
@@ -208,7 +208,7 @@ exports[`Template server can render templates inside templates 1`] = `
 </div>
 `;
 
-exports[`Template server can render values into a different host tag 1`] = `
+exports[`Template class server-side can render values into a different host tag 1`] = `
 <div>
   Hey! 
   <header>
@@ -219,7 +219,7 @@ exports[`Template server can render values into a different host tag 1`] = `
 </div>
 `;
 
-exports[`Template server can supply a default host tag 1`] = `
+exports[`Template class server-side can supply a default host tag 1`] = `
 <div>
   Hey! 
   <section>
@@ -230,7 +230,7 @@ exports[`Template server can supply a default host tag 1`] = `
 </div>
 `;
 
-exports[`Template server passes props to the rendered element 1`] = `
+exports[`Template class server-side passes props to the rendered element 1`] = `
 <div
   class="StyledTemplate"
 >
@@ -238,7 +238,7 @@ exports[`Template server passes props to the rendered element 1`] = `
 </div>
 `;
 
-exports[`Template server renders React placeholders 1`] = `
+exports[`Template class server-side renders React placeholders 1`] = `
 <div>
   <h1>
     Chapter 1: 
@@ -253,7 +253,7 @@ exports[`Template server renders React placeholders 1`] = `
 </div>
 `;
 
-exports[`Template server renders numbers, undefined, null, arrays, and objects 1`] = `
+exports[`Template class server-side renders numbers, undefined, null, arrays, and objects 1`] = `
 <div>
   Types: 0, , , 
   <span>
@@ -265,7 +265,7 @@ exports[`Template server renders numbers, undefined, null, arrays, and objects 1
 </div>
 `;
 
-exports[`Template server renders placeholders 1`] = `
+exports[`Template class server-side renders placeholders 1`] = `
 <div>
   <h1>
     Chapter 1: A Good Test
@@ -273,19 +273,315 @@ exports[`Template server renders placeholders 1`] = `
 </div>
 `;
 
-exports[`Template server renders the given string into a div 1`] = `
+exports[`Template class server-side renders the given string into a div 1`] = `
 <div>
   Hi there!
 </div>
 `;
 
-exports[`Template server renders the given string into the supplied DOM element type 1`] = `
+exports[`Template class server-side renders the given string into the supplied DOM element type 1`] = `
 <span>
   Hi there!
 </span>
 `;
 
-exports[`Template server supports string value patterns 1`] = `
+exports[`Template class server-side supports string value patterns 1`] = `
+<div>
+  Hey! 
+  <span>
+    <h1>
+      It worked!
+    </h1>
+  </span>
+</div>
+`;
+
+exports[`Template using hooks client-side can render templates inside templates 1`] = `
+<div>
+  A: 
+  <span
+    data-template-id="1"
+    data-template-key="test:1"
+  >
+    <div>
+      B: 
+      <span
+        data-template-id="2"
+        data-template-key="test:1"
+      >
+        <div>
+          C: 
+          <span
+            data-template-id="3"
+            data-template-key="test:1"
+          >
+            <span>
+              OK!
+            </span>
+          </span>
+        </div>
+      </span>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Template using hooks client-side can render values into a different host tag 1`] = `
+<div>
+  Hey! 
+  <header
+    data-template-id="1"
+    data-template-key="title:1"
+  >
+    <h1>
+      A Good Test
+    </h1>
+  </header>
+</div>
+`;
+
+exports[`Template using hooks client-side can supply a default host tag 1`] = `
+<div>
+  Hey! 
+  <section
+    data-template-id="1"
+    data-template-key="title:1"
+  >
+    <h1>
+      A Good Test
+    </h1>
+  </section>
+</div>
+`;
+
+exports[`Template using hooks client-side does not unmount moved portals 1`] = `
+<div>
+  <div>
+    <span
+      data-template-id="1"
+      data-template-key="button:1"
+    >
+      <button
+        data-testid="button"
+      >
+        2
+      </button>
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Template using hooks client-side passes props to the rendered element 1`] = `
+<div
+  class="StyledTemplate"
+>
+  Hi there!
+</div>
+`;
+
+exports[`Template using hooks client-side renders React placeholders 1`] = `
+<div>
+  <h1>
+    Chapter 1: 
+    <span
+      data-template-id="1"
+      data-template-key="title:1"
+    >
+      A 
+      <em>
+        Better
+      </em>
+       Test
+    </span>
+  </h1>
+</div>
+`;
+
+exports[`Template using hooks client-side renders numbers, undefined, null, arrays, and objects 1`] = `
+<div>
+  Types: 0, , , 
+  <span
+    data-template-id="1"
+    data-template-key="array:1"
+  >
+    1
+    2
+    3
+  </span>
+  , [object Hello]
+</div>
+`;
+
+exports[`Template using hooks client-side renders placeholders 1`] = `
+<div>
+  <h1>
+    Chapter 1: A Good Test
+  </h1>
+</div>
+`;
+
+exports[`Template using hooks client-side renders template updates 1`] = `
+<div>
+  Hey! 
+  <span
+    data-template-id="1"
+    data-template-key="title:1"
+  >
+    <h1>
+      A Good Test
+    </h1>
+  </span>
+   …and again… 
+  <span
+    data-template-id="1"
+    data-template-key="title:2"
+  >
+    <h1>
+      A Good Test
+    </h1>
+  </span>
+</div>
+`;
+
+exports[`Template using hooks client-side renders the given string into a div 1`] = `
+<div>
+  Hi there!
+</div>
+`;
+
+exports[`Template using hooks client-side renders the given string into the supplied DOM element type 1`] = `
+<span>
+  Hi there!
+</span>
+`;
+
+exports[`Template using hooks client-side renders value updates 1`] = `
+<div>
+  Hey! 
+  <span
+    data-template-id="1"
+    data-template-key="title:1"
+  >
+    <h2>
+      A Bad Test
+    </h2>
+  </span>
+</div>
+`;
+
+exports[`Template using hooks client-side supports string value patterns 1`] = `
+<div>
+  Hey! 
+  <span
+    data-template-id="1"
+    data-template-key="title:1"
+  >
+    <h1>
+      It worked!
+    </h1>
+  </span>
+</div>
+`;
+
+exports[`Template using hooks server-side can render templates inside templates 1`] = `
+<div>
+  A: 
+  <span>
+    <div>
+      B: 
+      <span>
+        <div>
+          C: 
+          <span>
+            <span>
+              OK!
+            </span>
+          </span>
+        </div>
+      </span>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Template using hooks server-side can render values into a different host tag 1`] = `
+<div>
+  Hey! 
+  <header>
+    <h1>
+      A Good Test
+    </h1>
+  </header>
+</div>
+`;
+
+exports[`Template using hooks server-side can supply a default host tag 1`] = `
+<div>
+  Hey! 
+  <section>
+    <h1>
+      A Good Test
+    </h1>
+  </section>
+</div>
+`;
+
+exports[`Template using hooks server-side passes props to the rendered element 1`] = `
+<div
+  class="StyledTemplate"
+>
+  Hi there!
+</div>
+`;
+
+exports[`Template using hooks server-side renders React placeholders 1`] = `
+<div>
+  <h1>
+    Chapter 1: 
+    <span>
+      A 
+      <em>
+        Better
+      </em>
+       Test
+    </span>
+  </h1>
+</div>
+`;
+
+exports[`Template using hooks server-side renders numbers, undefined, null, arrays, and objects 1`] = `
+<div>
+  Types: 0, , , 
+  <span>
+    1
+    2
+    3
+  </span>
+  , [object Hello]
+</div>
+`;
+
+exports[`Template using hooks server-side renders placeholders 1`] = `
+<div>
+  <h1>
+    Chapter 1: A Good Test
+  </h1>
+</div>
+`;
+
+exports[`Template using hooks server-side renders the given string into a div 1`] = `
+<div>
+  Hi there!
+</div>
+`;
+
+exports[`Template using hooks server-side renders the given string into the supplied DOM element type 1`] = `
+<span>
+  Hi there!
+</span>
+`;
+
+exports[`Template using hooks server-side supports string value patterns 1`] = `
 <div>
   Hey! 
   <span>

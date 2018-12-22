@@ -1,6 +1,7 @@
 import React from "react";
 import { render, fireEvent, wait } from "react-testing-library";
 import Template from "./index";
+import HooksTemplate from "./index.hooks";
 
 class StatefulButton extends React.Component {
   state = { counter: 0 };
@@ -22,16 +23,28 @@ class StatefulButton extends React.Component {
 }
 
 describe("Template", () => {
-  describe("server", () => {
-    defineTests(true);
+  describe("class", () => {
+    describe("server-side", () => {
+      defineTests(Template, true);
+    });
+
+    describe("client-side", () => {
+      defineTests(Template, false);
+    });
   });
 
-  describe("browser", () => {
-    defineTests(false);
+  describe("using hooks", () => {
+    describe("server-side", () => {
+      defineTests(HooksTemplate, true);
+    });
+
+    describe("client-side", () => {
+      defineTests(HooksTemplate, false);
+    });
   });
 });
 
-function defineTests(isServer) {
+function defineTests(Template, isServer) {
   beforeAll(() => {
     process.browser = !isServer;
   });
