@@ -187,8 +187,8 @@ in the browser – either by parsing it yourself or injecting it and crawling
 the resulting DOM. There are a handful of libraries that already do this, but
 it requires a nontrivial amount of code: remember that React requires using
 different names for many attributes, and has special handling for others (like
-`style`, where you’d have to parse a string of rules into an object). This is
-both slow and will bloat your bundle size.
+`style`, where you’d have to parse a string of rules into an object). That
+approach is both slow and will bloat your bundle size.
 
 ## Other Solutions
 
