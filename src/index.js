@@ -28,6 +28,8 @@ function escape(value) {
 }
 
 export default class Template extends React.PureComponent {
+  static displayName = "Template";
+
   static propTypes = {
     /**
      * The template HTML string.
