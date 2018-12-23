@@ -207,6 +207,11 @@ const Title = styled.h1`
   letter-spacing: 0.05em;
   text-transform: uppercase;
   text-align: center;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 `;
 
 const Tagline = styled.p`
@@ -290,7 +295,11 @@ export default class DemoPage extends React.Component {
         <GlobalStyle />
         <header>
           <Top>
-            <Title>react-dynamic-html</Title>
+            <Title>
+              <a href="https://github.com/exogen/react-dynamic-html">
+                react-dynamic-html
+              </a>
+            </Title>
             <Links>
               <li>
                 <a href="https://github.com/exogen/react-dynamic-html">
