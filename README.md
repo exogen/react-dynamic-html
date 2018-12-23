@@ -5,7 +5,11 @@ where values can be React elements.
 
 Because sometimes you just need to work with HTML from an older system or CMS.
 
-**[Demo!](https://exogen.github.io/react-dynamic-html/)**
+<div align="center">
+
+👉 **[Demo!](https://exogen.github.io/react-dynamic-html/)** 👈
+
+</div>
 
 - Tiny 1KB client-side bundle, no dependencies necessary
 - Template values can be dynamic React components
