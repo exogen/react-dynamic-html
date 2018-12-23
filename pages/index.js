@@ -17,6 +17,7 @@ const GlobalStyle = createGlobalStyle`
 
 const Top = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   margin-bottom: 30px;
@@ -127,10 +128,18 @@ const Arrow = styled.span.attrs(props => ({
   color: rgb(239, 210, 255);
 `;
 
+const GithubIcon = styled(FaGithub)`
+  vertical-align: middle;
+`;
+
+const NpmIcon = styled(FaNpm)`
+  vertical-align: middle;
+`;
+
 const Links = styled.ul`
   display: flex;
   list-style: none;
-  margin: 0 0 -5px 30px;
+  margin: 0 0 0 30px;
   padding: 0;
   align-items: center;
   justify-content: center;
@@ -140,11 +149,14 @@ const Links = styled.ul`
     padding: 0;
 
     a {
-      color: rgb(75, 0, 170);
-      opacity: 0.8;
+      display: flex;
+      align-items: center;
+      max-height: 28px;
+      color: rgba(75, 0, 170, 0.8);
+      overflow: hidden;
 
       &:hover {
-        opacity: 1;
+        color: rgb(75, 0, 170);
       }
     }
   }
@@ -201,12 +213,13 @@ class StatefulButton extends React.PureComponent {
 }
 
 const Title = styled.h1`
-  margin: 0;
+  margin: 0 0 0 30px;
   font-size: 24px;
   font-weight: normal;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   text-align: center;
+  white-space: nowrap;
 
   a {
     color: inherit;
@@ -224,9 +237,11 @@ const Tagline = styled.p`
   font-family: "Source Sans Pro", sans-serif;
   font-weight: 600;
   font-style: italic;
+  letter-spacing: 0.03em;
+  word-spacing: 0.08em;
   text-align: center;
   color: rgb(75, 0, 170);
-  opacity: 0.7;
+  opacity: 0.8;
 `;
 
 const Line = styled.span`
@@ -242,30 +257,82 @@ const Quote = styled.span`
   opacity: 0.4;
 `;
 
-class EditorDemo extends React.Component {
-  state = {
-    string: `<h1>{title}</h1>
+const sparkle = keyframes`
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.1;
+  }
+`;
+
+const MagicButton = styled(Button)`
+  margin: 20px;
+  padding: 10px;
+  background: rgb(68, 26, 147);
+  box-shadow: 0 0 20px 10px rgba(255, 240, 46, 0.8);
+
+  &:before {
+    nimation-name: ${sparkle};
+    animation: ${sparkle} 1.3s 0s infinite alternate;
+    content: "✨";
+  }
+
+  &:after {
+    animation: ${sparkle} 1.7s 0.4s infinite alternate;
+    content: "✨";
+  }
+`;
+
+MagicButton.displayName = "MagicButton";
+
+const defaultTemplate = `<h1>{title}</h1>
 
 <p>See: {button}</p>
 
 <p>Numbers: {array}</p>
 
 {nestedTemplate}
-`,
+`;
+
+class EditorDemo extends React.Component {
+  handleMagicReset = () => {
+    const chars = Array.from(defaultTemplate);
+    let index = 0;
+    const typeNextChar = () => {
+      if (index < chars.length) {
+        const string = chars.slice(0, index).join("");
+        this.setState({ string });
+        index += 1;
+        this.magicTimer = setTimeout(typeNextChar, 60);
+      }
+    };
+    typeNextChar();
+  };
+
+  state = {
+    string: defaultTemplate,
     values: {
       title: "It worked!",
       button: <StatefulButton>Count</StatefulButton>,
       array: [1, 2, 3].map(number => <Number key={number}>{number}</Number>),
       nestedTemplate: (
         <Template
-          string="ha! {title}"
+          string="Another one? {answer}"
           values={{
-            title: <b>gotcha.</b>
+            answer: <strong>Neato.</strong>
           }}
         />
+      ),
+      magic: (
+        <MagicButton onClick={this.handleMagicReset}>Magical Reset</MagicButton>
       )
     }
   };
+
+  componentWillUnmount() {
+    clearTimeout(this.magicTimer);
+  }
 
   handleChange = event => {
     this.setState({ string: event.target.value });
@@ -277,7 +344,10 @@ class EditorDemo extends React.Component {
       <EditorWrapper>
         <Controls>
           <Editor value={string} onChange={this.handleChange} />
-          <ValueEditor values={values} />
+          <ValueEditor
+            values={values}
+            valueTags={{ nestedTemplate: "section" }}
+          />
         </Controls>
         <OutputTemplate string={string} values={values} />
       </EditorWrapper>
@@ -303,12 +373,12 @@ export default class DemoPage extends React.Component {
             <Links>
               <li>
                 <a href="https://github.com/exogen/react-dynamic-html">
-                  <FaGithub size={24} />
+                  <GithubIcon size={24} />
                 </a>
               </li>
               <li>
                 <a href="https://www.npmjs.com/package/react-dynamic-html">
-                  <FaNpm size={40} />
+                  <NpmIcon size={40} />
                 </a>
               </li>
             </Links>
